@@ -9,7 +9,7 @@ namespace CompanyManager.Logic.DataContext
     public class EntitySet<TEntity> where TEntity : Entities.EntityObject, new()
     {
         #region fields
-        private DbSet<TEntity> _set;
+        private DbSet<TEntity> _dbSet;
         #endregion fields
 
         #region properties
@@ -21,7 +21,7 @@ namespace CompanyManager.Logic.DataContext
         /// <summary>
         /// Gets the queryable set of entities.
         /// </summary>
-        public IQueryable<TEntity> QuerySet => _set.AsQueryable();
+        public IQueryable<TEntity> QuerySet => _dbSet.AsQueryable();
         #endregion properties
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace CompanyManager.Logic.DataContext
         public EntitySet(DbContext context, DbSet<TEntity> dbSet)
         {
             Context = context;
-            _set = dbSet;
+            _dbSet = dbSet;
         }
 
         #region methods
@@ -52,7 +52,7 @@ namespace CompanyManager.Logic.DataContext
         /// <returns>The added entity.</returns>
         public TEntity Add(TEntity entity)
         {
-            return _set.Add(entity).Entity;
+            return _dbSet.Add(entity).Entity;
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace CompanyManager.Logic.DataContext
         /// <returns>A task that represents the asynchronous operation. The task result contains the added entity.</returns>
         public async Task<TEntity> AddAsync(TEntity entity)
         {
-            var result = await _set.AddAsync(entity).ConfigureAwait(false);
+            var result = await _dbSet.AddAsync(entity).ConfigureAwait(false);
             return result.Entity;
         }
 
@@ -74,7 +74,7 @@ namespace CompanyManager.Logic.DataContext
         /// <returns>The updated entity, or null if the entity was not found.</returns>
         public TEntity? Update(int id, TEntity entity)
         {
-            var existingEntity = _set.Find(id);
+            var existingEntity = _dbSet.Find(id);
             if (existingEntity != null)
             {
                 existingEntity.CopyProperties(entity);
@@ -90,7 +90,7 @@ namespace CompanyManager.Logic.DataContext
         /// <returns>A task that represents the asynchronous operation. The task result contains the updated entity, or null if the entity was not found.</returns>
         public async Task<TEntity?> UpdateAsync(int id, TEntity entity)
         {
-            var existingEntity = await _set.FindAsync(id).ConfigureAwait(false);
+            var existingEntity = await _dbSet.FindAsync(id).ConfigureAwait(false);
             if (existingEntity != null)
             {
                 existingEntity.CopyProperties(entity);
@@ -105,10 +105,10 @@ namespace CompanyManager.Logic.DataContext
         /// <returns>The removed entity, or null if the entity was not found.</returns>
         public TEntity? Remove(int id)
         {
-            var entity = _set.Find(id);
+            var entity = _dbSet.Find(id);
             if (entity != null)
             {
-                _set.Remove(entity);
+                _dbSet.Remove(entity);
             }
             return entity;
         }
