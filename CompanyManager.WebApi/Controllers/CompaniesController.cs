@@ -6,11 +6,12 @@ namespace CompanyManager.WebApi.Controllers
 {
     using TModel = Models.Company;
     using TEntity = Logic.Entities.Company;
+    using TContract = Common.Contracts.ICompany;
 
     /// <summary>
     /// Controller for managing companies.
     /// </summary>
-    public class CompaniesController : GenericController<TModel, TEntity>
+    public class CompaniesController : GenericController<TModel, TEntity, TContract>
     {
         /// <summary>
         /// Gets the query set for the entity.
@@ -24,11 +25,11 @@ namespace CompanyManager.WebApi.Controllers
                 // If the action is 'GetById(...)', then include the customers in the query.
                 if (ControllerContext.ActionDescriptor.ActionName == nameof(GetById))
                 {
-                    result = EntitySet.QuerySet.Include(e => e.Customers).AsQueryable();
+                    result = EntitySet.Include(e => e.Customers).AsQueryable();
                 }
                 else
                 {
-                    result = EntitySet.QuerySet;
+                    result = EntitySet.AsQueryable();
                 }
                 return result;
             }
@@ -52,10 +53,16 @@ namespace CompanyManager.WebApi.Controllers
         {
             var result = new TModel();
 
-            result.CopyProperties(entity);
+            (result as TContract).CopyProperties(entity);
             if (entity.Customers != null)
             {
-                result.Customers = entity.Customers.Select(e => Models.Customer.Create(e)).ToArray();
+                result.Customers = entity.Customers.Select(e =>
+                {
+                    var result = new Models.Customer();
+
+                    (result as Common.Contracts.ICustomer).CopyProperties(e);
+                    return result;
+                }).ToArray();
             }
             return result;
         }
@@ -70,7 +77,7 @@ namespace CompanyManager.WebApi.Controllers
         {
             var result = entity ??= new TEntity();
 
-            result.CopyProperties(model);
+            (result as TContract).CopyProperties(model);
             return result;
         }
     }

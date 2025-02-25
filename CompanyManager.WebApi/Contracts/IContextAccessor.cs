@@ -1,5 +1,4 @@
 ﻿using CompanyManager.Logic.Contracts;
-using CompanyManager.Logic.DataContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanyManager.WebApi.Contracts
@@ -8,6 +7,5 @@ namespace CompanyManager.WebApi.Contracts
     {
         IContext GetContext();
         DbSet<TEntity>? GetDbSet<TEntity>() where TEntity : class;
-        EntitySet<TEntity>? GetEntitySet<TEntity>() where TEntity : Logic.Entities.EntityObject, new();
     }
 }

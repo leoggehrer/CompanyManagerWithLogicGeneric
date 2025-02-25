@@ -2,11 +2,12 @@
 {
     using TModel = Models.Employee;
     using TEntity = Logic.Entities.Employee;
+    using TContract = Common.Contracts.IEmployee;
 
     /// <summary>
     /// Controller for handling Employee related operations.
     /// </summary>
-    public class EmployeesController : GenericController<TModel, TEntity>
+    public class EmployeesController : GenericController<TModel, TEntity, TContract>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EmployeesController"/> class.
@@ -26,7 +27,7 @@
         {
             var result = new TModel();
 
-            result.CopyProperties(entity);
+            (result as TContract).CopyProperties(entity);
             return result;
         }
 
@@ -40,7 +41,7 @@
         {
             var result = entity ??= new TEntity();
 
-            result.CopyProperties(model);
+            (result as TContract).CopyProperties(model);
             return result;
         }
     }

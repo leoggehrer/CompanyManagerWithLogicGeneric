@@ -1,5 +1,4 @@
-﻿using CompanyManager.Logic.DataContext;
-using CompanyManager.WebApi.Contracts;
+﻿using CompanyManager.WebApi.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanyManager.WebApi.Controllers
@@ -39,30 +38,6 @@ namespace CompanyManager.WebApi.Controllers
             else if (typeof(TEntity) == typeof(Logic.Entities.Employee))
             {
                 result = GetContext().EmployeeSet as DbSet<TEntity>;
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Gets the EntitySet for the specified entity type.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns>The EntitySet for the specified entity type, or null if the entity type is not recognized.</returns>
-        public EntitySet<TEntity>? GetEntitySet<TEntity>() where TEntity : Logic.Entities.EntityObject, new()
-        {
-            EntitySet<TEntity>? result = default;
-
-            if (typeof(TEntity) == typeof(Logic.Entities.Company))
-            {
-                result = GetContext().CompanySet as EntitySet<TEntity>;
-            }
-            else if (typeof(TEntity) == typeof(Logic.Entities.Customer))
-            {
-                result = GetContext().CustomerSet as EntitySet<TEntity>;
-            }
-            else if (typeof(TEntity) == typeof(Logic.Entities.Employee))
-            {
-                result = GetContext().EmployeeSet as EntitySet<TEntity>;
             }
             return result;
         }

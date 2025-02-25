@@ -1,5 +1,4 @@
 ﻿using CompanyManager.Logic.Contracts;
-using CompanyManager.Logic.DataContext;
 using CompanyManager.WebApi.Contracts;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +13,13 @@ namespace CompanyManager.WebApi.Controllers
     /// </summary>
     /// <typeparam name="TModel">The type of the model.</typeparam>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TContract">The type of the interface.</typeparam>
     [Route("api/[controller]")]
     [ApiController]
-    public abstract class GenericController<TModel, TEntity> : ControllerBase
-        where TModel : Models.ModelObject, new()
-        where TEntity : Logic.Entities.EntityObject, new()
+    public abstract class GenericController<TModel, TEntity, TContract> : ControllerBase
+        where TContract : Common.Contracts.IIdentifiable
+        where TModel : Models.ModelObject, TContract, new()
+        where TEntity : Logic.Entities.EntityObject, TContract, new()
     {
         #region properties
         /// <summary>
@@ -36,14 +37,14 @@ namespace CompanyManager.WebApi.Controllers
         /// <summary>
         /// Gets the DbSet.
         /// </summary>
-        protected virtual EntitySet<TEntity> EntitySet => ContextAccessor.GetEntitySet<TEntity>() ?? throw new Exception($"Invalid DbSet<{typeof(TEntity)}>");
+        protected virtual DbSet<TEntity> EntitySet => ContextAccessor.GetDbSet<TEntity>() ?? throw new Exception($"Invalid DbSet<{typeof(TEntity)}>");
         /// <summary>
         /// Gets the IQueriable<TEntity>.
         /// </summary>
-        protected virtual IQueryable<TEntity> QuerySet => EntitySet.QuerySet;
+        protected virtual IQueryable<TEntity> QuerySet => EntitySet.AsQueryable();
         #endregion properties
 
-        protected GenericController(IContextAccessor contextAccessor) 
+        protected GenericController(IContextAccessor contextAccessor)
         {
             ContextAccessor = contextAccessor;
         }
@@ -146,7 +147,7 @@ namespace CompanyManager.WebApi.Controllers
         {
             try
             {
-                var entity = EntitySet.QuerySet.FirstOrDefault(e => e.Id == id);
+                var entity = EntitySet.FirstOrDefault(e => e.Id == id);
 
                 if (entity != null)
                 {
@@ -176,7 +177,7 @@ namespace CompanyManager.WebApi.Controllers
         {
             try
             {
-                var entity = EntitySet.QuerySet.FirstOrDefault(e => e.Id == id);
+                var entity = EntitySet.FirstOrDefault(e => e.Id == id);
 
                 if (entity != null)
                 {
@@ -184,7 +185,7 @@ namespace CompanyManager.WebApi.Controllers
 
                     patchModel.ApplyTo(model);
 
-                    entity.CopyProperties(model);
+                    entity = ToEntity(model, entity);
                     Context.SaveChanges();
                 }
                 return entity == null ? NotFound() : Ok(ToModel(entity));
@@ -208,11 +209,11 @@ namespace CompanyManager.WebApi.Controllers
         {
             try
             {
-                var entity = EntitySet.QuerySet.FirstOrDefault(e => e.Id == id);
+                var entity = EntitySet.FirstOrDefault(e => e.Id == id);
 
                 if (entity != null)
                 {
-                    EntitySet.Remove(entity.Id);
+                    EntitySet.Remove(entity);
                     Context.SaveChanges();
                 }
                 return entity == null ? NotFound() : NoContent();

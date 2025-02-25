@@ -6,8 +6,17 @@ namespace CompanyManager.Logic.DataContext
     internal class CompanyContext : DbContext, IContext
     {
         #region fields
+        private static string DatabaseType = "Sqlite";
         private static string ConnectionString = "data source=CompanyManager.db";
         #endregion fields
+
+        static CompanyContext()
+        {
+            var appSettings = Common.Modules.Configuration.AppSettings.Instance;
+
+            DatabaseType = appSettings["Database:Type"] ?? DatabaseType;
+            ConnectionString = appSettings[$"ConnectionStrings:{DatabaseType}ConnectionString"] ?? ConnectionString;
+        }
 
         #region properties
         internal DbSet<Entities.Company> DbCompanySet { get; set; }
@@ -22,16 +31,23 @@ namespace CompanyManager.Logic.DataContext
         #region constructors
         public CompanyContext()
         {
-            CompanySet = new EntitySet<Entities.Company>(this, DbCompanySet!);
-            CustomerSet = new EntitySet<Entities.Customer>(this, DbCustomerSet!);
-            EmployeeSet = new EntitySet<Entities.Employee>(this, DbEmployeeSet!);
+            CompanySet = new CompanySet(this, DbCompanySet!);
+            CustomerSet = new CustomerSet(this, DbCustomerSet!);
+            EmployeeSet = new EmployeeSet(this, DbEmployeeSet!);
         }
         #endregion constructors
 
         #region methods
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(ConnectionString);
+            if (DatabaseType == "Sqlite")
+            {
+                optionsBuilder.UseSqlite(ConnectionString);
+            }
+            else if (DatabaseType == "SqlServer")
+            {
+                optionsBuilder.UseSqlServer(ConnectionString);
+            }
 
             base.OnConfiguring(optionsBuilder);
         }
