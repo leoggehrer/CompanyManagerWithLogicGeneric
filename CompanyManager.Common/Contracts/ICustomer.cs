@@ -23,6 +23,10 @@ namespace CompanyManager.Common.Contracts
         string Email { get; set; }
         #endregion Properties
 
+        #region Navigation properties
+        public ICompany? Company { get; set; }
+        #endregion Navigation properties
+
         #region Methods
         /// <summary>
         /// Copies the properties of the specified customer to this customer.
@@ -36,6 +40,7 @@ namespace CompanyManager.Common.Contracts
             CompanyId = customer.CompanyId;
             Name = customer.Name;
             Email = customer.Email;
+            Company = customer.Company ?? Company;
         }
         #endregion Methods
     }

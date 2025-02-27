@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CompanyManager.Common.Contracts;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 
 namespace CompanyManager.ConApp
@@ -378,7 +379,9 @@ namespace CompanyManager.ConApp
 
             try
             {
-                foreach (var item in context.EmployeeSet.QuerySet.AsNoTracking().Where(query).Include(e => e.Company))
+                foreach (var item in context.EmployeeSet.QuerySet
+                                                        .AsNoTracking()
+                                                        .Where(query).Include(e => e.Company))
                 {
                     Console.WriteLine($"{item} - {item.Company?.Name}");
                 }

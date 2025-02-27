@@ -34,14 +34,18 @@ namespace CompanyManager.Logic.Entities
         /// <summary>
         /// Gets or sets the list of customers associated with the company.
         /// </summary>
-        public List<Customer> Customers { get; set; } = [];
+        public List<Common.Contracts.ICustomer>? Customers { get; set; } = [];
         /// <summary>
         /// Gets or sets the list of employees associated with the company.
         /// </summary>
-        public List<Employee> Employees { get; set; } = [];
+        public List<Common.Contracts.IEmployee>? Employees { get; set; } = [];
         #endregion navigation properties
 
         #region methods
+        public void CopyProperties(Common.Contracts.ICompany other)
+        {
+            (this as Common.Contracts.ICompany).CopyProperties(other);
+        }
         /// <summary>
         /// Returns a string representation of the company.
         /// </summary>

@@ -1,16 +1,17 @@
 ﻿using CompanyManager.Logic.Entities;
+using CompanyManager.Common.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanyManager.Logic.DataContext
 {
-    internal class CustomerSet : EntitySet<Entities.Customer>
+    internal sealed partial class CustomerSet : EntitySet<Customer, ICustomer>
     {
         public CustomerSet(DbContext context, DbSet<Customer> dbSet) : base(context, dbSet)
         {
         }
-        protected override void CopyProperties(Customer target, Customer source)
+        protected override void CopyProperties(Customer target, ICustomer source)
         {
-            (target as Common.Contracts.ICustomer).CopyProperties(source);
+            (target as ICustomer).CopyProperties(source);
         }
     }
 }

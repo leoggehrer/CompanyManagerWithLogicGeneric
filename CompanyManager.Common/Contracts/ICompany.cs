@@ -21,6 +21,10 @@ namespace CompanyManager.Common.Contracts
         string? Description { get; set; }
         #endregion Properties
 
+        #region Navigation properties
+        public List<ICustomer>? Customers { get; set; }
+        #endregion Navigation properties
+
         #region Methods
         /// <summary>
         /// Copies the properties of the specified company to this company.
@@ -34,6 +38,8 @@ namespace CompanyManager.Common.Contracts
             Name = company.Name;
             Address = company.Address;
             Description = company.Description;
+
+            Customers = company.Customers?.ToList() ?? Customers ?? [];
         }
         #endregion Methods
     }

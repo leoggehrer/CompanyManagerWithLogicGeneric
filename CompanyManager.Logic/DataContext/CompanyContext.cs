@@ -1,4 +1,5 @@
 ﻿using CompanyManager.Logic.Contracts;
+using CompanyManager.Common.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanyManager.Logic.DataContext
@@ -23,9 +24,9 @@ namespace CompanyManager.Logic.DataContext
         internal DbSet<Entities.Customer> DbCustomerSet { get; set; }
         internal DbSet<Entities.Employee> DbEmployeeSet { get; set; }
 
-        public EntitySet<Entities.Company> CompanySet { get; }
-        public EntitySet<Entities.Customer> CustomerSet { get; }
-        public EntitySet<Entities.Employee> EmployeeSet { get; }
+        public EntitySet<Entities.Company, ICompany> CompanySet { get; }
+        public EntitySet<Entities.Customer, ICustomer> CustomerSet { get; }
+        public EntitySet<Entities.Employee, IEmployee> EmployeeSet { get; }
         #endregion properties
 
         #region constructors

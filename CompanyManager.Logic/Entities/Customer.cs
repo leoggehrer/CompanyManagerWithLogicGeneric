@@ -35,7 +35,7 @@ namespace CompanyManager.Logic.Entities
         /// <summary>
         /// Gets or sets the associated company.
         /// </summary>
-        public Company? Company { get; set; }
+        public Common.Contracts.ICompany? Company { get; set; }
         #endregion navigation properties
 
         #region methods
