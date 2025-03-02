@@ -25,13 +25,6 @@ namespace CompanyManager.Common.Contracts
         string Email { get; set; }
         #endregion Properties
 
-        #region navigation properties
-        /// <summary>
-        /// Gets or sets the associated company.
-        /// </summary>
-        public ICompany? Company { get; set; }
-        #endregion navigation properties
-
         #region Methods
         /// <summary>
         /// Copies the properties of the specified employee to this employee.
@@ -46,7 +39,6 @@ namespace CompanyManager.Common.Contracts
             FirstName = employee.FirstName;
             LastName = employee.LastName;
             Email = employee.Email;
-            Company = employee.Company ?? Company;
         }
         #endregion Methods
     }

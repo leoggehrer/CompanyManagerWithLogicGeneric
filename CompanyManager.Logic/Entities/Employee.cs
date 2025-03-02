@@ -31,7 +31,7 @@
         /// <summary>
         /// Gets or sets the associated company.
         /// </summary>
-        public Common.Contracts.ICompany? Company { get; set; }
+        public Company? Company { get; set; }
         #endregion navigation properties
 
         #region methods

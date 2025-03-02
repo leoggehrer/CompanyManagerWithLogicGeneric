@@ -6,10 +6,7 @@ namespace CompanyManager.Logic.DataContext
     /// Represents a set of entities that can be queried from a database and provides methods to manipulate them.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    /// <typeparam name="TContract">The interface that implements the entity.</typeparam>
-    public abstract partial class EntitySet<TEntity, TContract> 
-        where TContract : Common.Contracts.IIdentifiable
-        where TEntity : Entities.EntityObject, TContract, new()
+    public abstract class EntitySet<TEntity> where TEntity : Entities.EntityObject, new()
     {
         #region fields
         private DbSet<TEntity> _dbSet;
@@ -24,7 +21,7 @@ namespace CompanyManager.Logic.DataContext
         /// <summary>
         /// Gets the queryable set of entities.
         /// </summary>
-        public IQueryable<TContract> QuerySet => _dbSet.AsQueryable<TContract>();
+        public IQueryable<TEntity> QuerySet => _dbSet.AsQueryable();
         #endregion properties
 
         /// <summary>
@@ -39,35 +36,25 @@ namespace CompanyManager.Logic.DataContext
         }
 
         #region methods
-        protected abstract void CopyProperties(TEntity target, TContract source);
+        protected abstract void CopyProperties(TEntity target, TEntity source);
 
         /// <summary>
         /// Creates a new instance of the entity.
         /// </summary>
         /// <returns>A new instance of the entity.</returns>
-        public virtual TContract Create()
+        public virtual TEntity Create()
         {
             return new TEntity();
         }
 
-        public virtual TContract Create(TContract other)
-        {
-            var result = new TEntity();
-
-            CopyProperties(result, other);
-            return result;
-        }
         /// <summary>
         /// Adds the specified entity to the set.
         /// </summary>
         /// <param name="entity">The entity to add.</param>
         /// <returns>The added entity.</returns>
-        public virtual TContract Add(TContract entity)
+        public virtual TEntity Add(TEntity entity)
         {
-            var newEntity = new TEntity();
-
-            CopyProperties(newEntity, entity);
-            return _dbSet.Add(newEntity).Entity;
+            return _dbSet.Add(entity).Entity;
         }
 
         /// <summary>
@@ -75,13 +62,9 @@ namespace CompanyManager.Logic.DataContext
         /// </summary>
         /// <param name="entity">The entity to add.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the added entity.</returns>
-        public virtual async Task<TContract> AddAsync(TEntity entity)
+        public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
-            var newEntity = new TEntity();
-
-            CopyProperties(newEntity, entity);
-
-            var result = await _dbSet.AddAsync(newEntity).ConfigureAwait(false);
+            var result = await _dbSet.AddAsync(entity).ConfigureAwait(false);
 
             return result.Entity;
         }
@@ -92,7 +75,7 @@ namespace CompanyManager.Logic.DataContext
         /// <param name="id">The identifier of the entity to update.</param>
         /// <param name="entity">The entity with updated values.</param>
         /// <returns>The updated entity, or null if the entity was not found.</returns>
-        public virtual TContract? Update(int id, TContract entity)
+        public virtual TEntity? Update(int id, TEntity entity)
         {
             var existingEntity = _dbSet.Find(id);
             if (existingEntity != null)
@@ -108,7 +91,7 @@ namespace CompanyManager.Logic.DataContext
         /// <param name="id">The identifier of the entity to update.</param>
         /// <param name="entity">The entity with updated values.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the updated entity, or null if the entity was not found.</returns>
-        public virtual async Task<TContract?> UpdateAsync(int id, TContract entity)
+        public virtual async Task<TEntity?> UpdateAsync(int id, TEntity entity)
         {
             var existingEntity = await _dbSet.FindAsync(id).ConfigureAwait(false);
             if (existingEntity != null)
@@ -123,7 +106,7 @@ namespace CompanyManager.Logic.DataContext
         /// </summary>
         /// <param name="id">The identifier of the entity to remove.</param>
         /// <returns>The removed entity, or null if the entity was not found.</returns>
-        public virtual TContract? Remove(int id)
+        public virtual TEntity? Remove(int id)
         {
             var entity = _dbSet.Find(id);
             if (entity != null)

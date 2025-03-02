@@ -1,17 +1,15 @@
-﻿using CompanyManager.Logic.Entities;
-using CompanyManager.Common.Contracts;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace CompanyManager.Logic.DataContext
 {
-    internal sealed partial class EmployeeSet : EntitySet<Employee, IEmployee>
+    internal class EmployeeSet : EntitySet<Entities.Employee>
     {
-        public EmployeeSet(DbContext context, DbSet<Employee> dbSet) : base(context, dbSet)
+        public EmployeeSet(DbContext context, DbSet<Entities.Employee> dbSet) : base(context, dbSet)
         {
         }
-        protected override void CopyProperties(Employee target, IEmployee source)
+        protected override void CopyProperties(Entities.Employee target, Entities.Employee source)
         {
-            (target as IEmployee).CopyProperties(source);
+            (target as Common.Contracts.IEmployee).CopyProperties(source);
         }
     }
 }

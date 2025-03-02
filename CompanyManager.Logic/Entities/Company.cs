@@ -34,11 +34,11 @@ namespace CompanyManager.Logic.Entities
         /// <summary>
         /// Gets or sets the list of customers associated with the company.
         /// </summary>
-        public List<Common.Contracts.ICustomer>? Customers { get; set; } = [];
+        public List<Customer>? Customers { get; set; } = [];
         /// <summary>
         /// Gets or sets the list of employees associated with the company.
         /// </summary>
-        public List<Common.Contracts.IEmployee>? Employees { get; set; } = [];
+        public List<Employee>? Employees { get; set; } = [];
         #endregion navigation properties
 
         #region methods
