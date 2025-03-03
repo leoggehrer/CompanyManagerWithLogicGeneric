@@ -2,7 +2,7 @@
 
 **Lernziele:**
 
-- Wie eine generische Klasse `EntitySet<T>` zum Anpassen von `Create`, `Insert`, `Update`und `Delete` Operationen erstellt wird.
+- Wie eine generische Klasse `EntitySet<T>` zum Anpassen von `Create`, `Insert`, `Update` und `Delete` Operationen erstellt wird.
 
 **Hinweis:** Als Startpunkt wird die Vorlage [CompanyManagerWithSqlite](https://github.com/leoggehrer/CompanyManagerWithSqlite) verwendet.
 
@@ -12,13 +12,13 @@ Bevor mit der Umsetzung begonnen wird, sollte die Vorlage heruntergeladen und di
 
 ### Analyse der `DbSet<T>`-Eigenschaft in der Klasse `CompanyContext`
 
-Für jede Entität (`Company`, `Customer` und `Employee`) gibt es im Context (`CompanyContext`) eine Eigenschaft vom Typ `DbSet<T>`. Das bedeutet, dass der Zugriff für die CRUD-Operationen der entsprechende Entität über diese Eigenschaft erfolgt. Allerdings hat der Context keine Kontrolle wenn diese Operationen direkt am `DbSet<T>` erfolgen. In vielen Anwendungsfällen ist es jedoch erforderlich, dass zusätzliche Aktionen bei den Standard-Operationen (CRUD) ausgeführt werden. Dies führt dazu, dass wir eine generiche Klasse `EntitySe<T>` entwickeln und den Zugriff auf diese Klasse bzw. deren Ableitung umleiten.
+Für jede Entität (`Company`, `Customer` und `Employee`) gibt es im Context (`CompanyContext`) eine Eigenschaft vom Typ `DbSet<T>`. Das bedeutet, dass der Zugriff für die CRUD-Operationen der entsprechende Entität über diese Eigenschaft erfolgt. Allerdings hat der Context keine Kontrolle, wenn diese Operationen direkt am `DbSet<T>` erfolgen. In vielen Anwendungsfällen ist es jedoch erforderlich, dass zusätzliche Aktionen bei den Standard-Operationen (CRUD) ausgeführt werden. Dies führt dazu, dass wir eine generische Klasse `EntitySe<T>` entwickeln und den Zugriff auf diese Klasse bzw. deren Ableitung umleiten.
 
 #### Implementierung der generischen Klasse `EntitySet<T>`
 
-Wenn die Standard-Operationen (CRUD) angepasst werden können sollen, dann müssen die CRUD-Operationen vom `DbSet<T>` verdeckt werden und in die generische Klasse ausgelaget werden. Dies geschieht dadurch, dass das `DbSet<T>` in der generischen Klasse eingebetet ist und die entsprechenden Operation an das `DbSet<T>` weiter geleitet werden. Damit kann ein Steuercode, durch das Überschreiben von Methoden, zwischen den Operationen geschaltet werden.
+Wenn die Standard-Operationen (CRUD) angepasst werden sollen, dann müssen die CRUD-Operationen vom `DbSet<T>` verdeckt und in die generische Klasse ausgelaget werden. Dies geschieht dadurch, dass das `DbSet<T>` in der generischen Klasse eingebettet ist und die entsprechenden Operation an das `DbSet<T>` weiter geleitet werden. Damit kann ein Steuercode, durch das Überschreiben von Methoden, zwischen den Operationen geschaltet werden.
 
-Im nachfolgenden Abschnitt befindet sich die generisch Klasse `EntitySet<TEntity>`:
+Im nachfolgenden Abschnitt befindet sich die generische Klasse `EntitySet<TEntity>`:
 
 ```csharp
 namespace CompanyManager.Logic.DataContext
@@ -141,7 +141,7 @@ namespace CompanyManager.Logic.DataContext
 }
 ```
 
-Die Klasse `EntityStet<T>` kabselt den Zugriff auf die Eigenschaft von `DbSet<T>` und bietet für die Standard-Operationen (CRUD) eigene Methode an. Diese Methoden sind alle mit dem Spezifizierer `virtual` markiert und können bei Bedarf in der Ableitung überschrieben werden. Im nachfogenden Abschnitt befinden sich die konkretisierten Klassen für die einzelnen Entitäten:
+Die Klasse `EntityStet<T>` kabselt den Zugriff auf die Eigenschaft von `DbSet<T>` und bietet für die Standard-Operationen (CRUD) eigene Methode an. Diese Methoden sind alle mit dem Spezifizierer `virtual` markiert und können bei Bedarf in der Ableitung überschrieben werden. Im nachfolgenden Abschnitt befinden sich die konkretisierten Klassen für die einzelnen Entitäten:
 
 ```csharp
 namespace CompanyManager.Logic.DataContext
@@ -229,7 +229,7 @@ namespace CompanyManager.Logic.DataContext
 }
 ```
 
-Die Ableitungen sind einfach gehalten. Es muss der Konstruktor und die entsprechende Methode `CopyProperties(...)` implementiert werden. Der Konstruktor leitet die Parameter `DbContext` und den `DbSte<T>`an die Oberklasse weiter. Die Methode `CopyProperties(...)` kann nur in der konkretisierten Klassen implementiert. Denn nur auf dieser Ebene ist die `CopyProperties(...)` der entsprechenden Schnittstelle bekannt. Zur Erinnerung: In den Schnittstellen sind ist die Methode `CopyProperties(...)` als Default-Implementierung definiert.
+Die Ableitungen sind einfach gehalten. Es muss der Konstruktor und die entsprechende Methode `CopyProperties(...)` implementiert werden. Der Konstruktor leitet die Parameter `DbContext` und den `DbSte<T>` an die Oberklasse weiter. Die Methode `CopyProperties(...)` kann nur in den konkretisierten Klassen implementiert werden. Denn nur auf dieser Ebene ist die `CopyProperties(...)` der entsprechenden Schnittstelle bekannt. Zur Erinnerung: In den Schnittstellen ist die Methode `CopyProperties(...)` als Default-Implementierung definiert.
 
 ### Anpassung der Klasse `CompanyContext` und der Schnittstelle `IContext`
 
