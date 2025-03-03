@@ -9,7 +9,7 @@ namespace CompanyManager.Logic.DataContext
     public abstract class EntitySet<TEntity> where TEntity : Entities.EntityObject, new()
     {
         #region fields
-        private DbSet<TEntity> _dbSet;
+        protected DbSet<TEntity> _dbSet;
         #endregion fields
 
         #region properties
